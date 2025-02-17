@@ -1,0 +1,63 @@
+version: "3.8"
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: ref-system-api
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+
+  db:
+    image: postgres:14
+    container_name: ref-system-db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  alembic:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: alembic
+    command: poetry run alembic upgrade head
+    depends_on:
+      - db
+    environment:
+      - PYTHONPATH=/app
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    working_dir: /app
+
+  alembic-generate:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: alembic-generate
+    command: poetry run alembic revision --autogenerate -m "initial migration"
+    depends_on:
+      - db
+    environment:
+      - PYTHONPATH=/app
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    working_dir: /app
+
+volumes:
+  postgres_data:
