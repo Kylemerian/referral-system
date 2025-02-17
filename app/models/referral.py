@@ -11,7 +11,7 @@ class Referral(Base):
     referrer_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     referred_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     registered_at = Column(
-        DateTime, default=lambda: datetime.now(timezone.utc))
+        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
 
     referrer_user = relationship(
         "User", foreign_keys=[referrer_id], back_populates="referrals")

@@ -2,12 +2,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from app.models.referral_code import ReferralCode
 from app.schemas.referral_code import ReferralCodeCreate
-from datetime import datetime
+from datetime import datetime, timezone
 
 
 async def create_referral_code(db: AsyncSession, owner_id: int,
                                code: str, expires_at: datetime):
-    db_code = ReferralCode(code=code, owner_id=owner_id, expires_at=expires_at)
+    db_code = ReferralCode(code=code, owner_id=owner_id,
+                           expires_at=expires_at.replace(tzinfo=timezone.utc))
     db.add(db_code)
     await db.commit()
     await db.refresh(db_code)
