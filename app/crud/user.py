@@ -2,12 +2,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from app.models.user import User
 from app.schemas.user import UserCreate
-from passlib.context import CryptContext
 from app.core.security import hash_password, verify_password
 from fastapi import HTTPException
-
-
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 async def get_user_by_email(db: AsyncSession, email: str):
@@ -16,7 +12,7 @@ async def get_user_by_email(db: AsyncSession, email: str):
 
 
 async def create_user(db: AsyncSession, user_data: UserCreate):
-    hashed_password = pwd_context.hash(user_data.password)
+    hashed_password = hash_password(user_data.password)
     db_user = User(email=user_data.email, hashed_password=hashed_password)
     db.add(db_user)
     await db.commit()
