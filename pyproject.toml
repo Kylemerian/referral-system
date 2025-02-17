@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "referral-system"
+version = "0.1.0"
+description = ""
+authors = ["Kylemerian <s02242524@gse.cs.msu.ru>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = {extras = ["uvicorn"], version = "^0.115.8"}
+sqlalchemy = "^2.0.38"
+alembic = "^1.14.1"
+pyjwt = "^2.10.1"
+redis = "^5.2.1"
+asyncpg = "^0.30.0"
+uvicorn = "^0.34.0"
+pydantic = "^2.10.6"
+pydantic-settings = "^2.7.1"
+python-dotenv = "^1.0.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
