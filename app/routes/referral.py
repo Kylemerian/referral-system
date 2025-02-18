@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.schemas.referral import ReferralCreate, ReferralResponse
+from app.schemas.referral import ReferralResponse
 from app.crud.referral import add_referral, get_referrals_by_referrer
 from app.crud.referral_code import get_referral_code_by_user
 from app.core.database import get_db

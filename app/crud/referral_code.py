@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from app.models.referral_code import ReferralCode
-from app.schemas.referral_code import ReferralCodeCreate
+from app.models.user import User
 from datetime import datetime, timezone
 
 
@@ -18,6 +18,15 @@ async def create_referral_code(db: AsyncSession, owner_id: int,
 async def get_referral_code_by_user(db: AsyncSession, owner_id: int):
     result = await db.execute(select(ReferralCode).
                               filter(ReferralCode.owner_id == owner_id))
+    return result.scalars().first()
+
+
+async def get_referral_code_by_email(db: AsyncSession, owner_email: str):
+    result = await db.execute(
+        select(ReferralCode)
+        .join(User, User.id == ReferralCode.owner_id)
+        .filter(User.email == owner_email)
+    )
     return result.scalars().first()
 
 

@@ -4,6 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from datetime import timedelta
 from app import crud, schemas
 from app.core.database import get_db
+from app.core.security import validate_email
 from app.core.security import create_access_token
 from app.crud.user import get_user_by_email
 from app.crud.user import verify_user_password
@@ -17,9 +18,16 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 async def register_user(
     user: schemas.UserCreate, db: AsyncSession = Depends(get_db)
 ):
+    """Регистрация пользователя с валидацией email"""
+
+    is_valid_email = await validate_email(user.email)
+    if not is_valid_email:
+        raise HTTPException(status_code=400, detail="Недействительный email")
+
     existing_user = await get_user_by_email(db, user.email)
     if existing_user:
-        raise HTTPException(status_code=400, detail="Email already registered")
+        raise HTTPException(
+            status_code=400, detail="Email уже зарегистрирован")
 
     new_user = await crud.create_user(db, user)
     return new_user

@@ -12,6 +12,8 @@ class Settings(BaseSettings):
     POSTGRES_SERVER: str
     POSTGRES_PORT: int = 5432
     POSTGRES_DB: str
+    API_KEY_HUNTER: str
+    REDIS_URL: str
 
     @property
     def DATABASE_URL(self):
